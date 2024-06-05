@@ -4,9 +4,10 @@ import { ThumbsUp, Trash } from "phosphor-react";
 
 interface CommentsProps {
   content: string;
+  handleDeleteComment: (content: string) => void;
 }
 
-export function Comments({ content }: CommentsProps) {
+export function Comments({ content, handleDeleteComment }: CommentsProps) {
   return (
     <section className={styles.comments}>
       <div className={styles.containerComments}>
@@ -19,7 +20,7 @@ export function Comments({ content }: CommentsProps) {
                 Cerca de 1hr atrás
               </time>
             </div>
-            <button>
+            <button onClick={() => handleDeleteComment(content)}>
               <Trash size={24} className={styles.iconTrash} />
             </button>
           </header>

@@ -45,6 +45,13 @@ export function Post({ author, content, publishedAt }: IPostData) {
     setNewComments(event.target.value);
   }
 
+  function handleDeleteComment(commentsToDelete: string) {
+    const commentsWithoutDeleteOne = comments.filter((comment) => {
+      return comment !== commentsToDelete;
+    });
+    setComments(commentsWithoutDeleteOne);
+  }
+
   return (
     <article className={styles.post}>
       <header className={styles.headerPost}>
@@ -90,7 +97,11 @@ export function Post({ author, content, publishedAt }: IPostData) {
         <button type="submit">Publicar</button>
       </form>
       {comments.map((comment, index) => (
-        <Comments key={index} content={comment} />
+        <Comments
+          key={index}
+          content={comment}
+          handleDeleteComment={handleDeleteComment}
+        />
       ))}
     </article>
   );
