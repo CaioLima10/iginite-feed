@@ -1,3 +1,4 @@
+import { ChangeEvent, useState } from "react";
 import { Comments } from "./comments";
 import styles from "./post.module.css";
 import { format, formatDistanceToNow } from "date-fns";
@@ -14,6 +15,9 @@ interface IPostData {
 }
 
 export function Post({ author, content, publishedAt }: IPostData) {
+  const [comments, setComments] = useState<string[]>([]);
+  const [newComments, setNewComments] = useState("");
+
   const publishedDateFormatted = format(
     publishedAt,
     "d 'de' LLLL 'ás' HH:mm'h'",
@@ -26,6 +30,20 @@ export function Post({ author, content, publishedAt }: IPostData) {
     locale: ptBR,
     addSuffix: true,
   });
+
+  function handleChangeNewComment(event: ChangeEvent<HTMLFormElement>) {
+    event?.preventDefault();
+
+    const newComments = event.target.comment.value;
+
+    setComments([...comments, newComments]);
+
+    setNewComments("");
+  }
+
+  function handleChangeTexterea(event: ChangeEvent<HTMLTextAreaElement>) {
+    setNewComments(event.target.value);
+  }
 
   return (
     <article className={styles.post}>
@@ -47,25 +65,33 @@ export function Post({ author, content, publishedAt }: IPostData) {
       </header>
 
       <div className={styles.content}>
-        {content.map((line) => {
+        {content.map((line, index) => {
           if (line.type === "paragraph") {
-            return <p>{line.content}</p>;
+            return <p key={index}>{line.content}</p>;
           } else if (line.type === "link") {
             return (
-              <p>
+              <p key={index}>
                 <a href="#">{line.content}</a>
               </p>
             );
           }
+          return null;
         })}
       </div>
-      <form className={styles.commentForm}>
+      <form onSubmit={handleChangeNewComment} className={styles.commentForm}>
         <strong>Deixe seu feedback</strong>
-        <textarea placeholder="Deixe seu comentario" />
+        <textarea
+          name="comment"
+          value={newComments}
+          onChange={handleChangeTexterea}
+          placeholder="Deixe seu comentario"
+        />
 
         <button type="submit">Publicar</button>
       </form>
-      <Comments />
+      {comments.map((comment, index) => (
+        <Comments key={index} content={comment} />
+      ))}
     </article>
   );
 }

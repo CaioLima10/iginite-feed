@@ -2,7 +2,11 @@ import styles from "./comments.module.css";
 
 import { ThumbsUp, Trash } from "phosphor-react";
 
-export function Comments() {
+interface CommentsProps {
+  content: string;
+}
+
+export function Comments({ content }: CommentsProps) {
   return (
     <section className={styles.comments}>
       <div className={styles.containerComments}>
@@ -20,7 +24,7 @@ export function Comments() {
             </button>
           </header>
           <div>
-            <p>Muito bom Devon, parabéns!! 👏👏</p>
+            <p>{content}</p>
           </div>
         </div>
       </div>
