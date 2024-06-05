@@ -1,38 +1,63 @@
 import { Comments } from "./comments";
 import styles from "./post.module.css";
+import { format, formatDistanceToNow } from "date-fns";
+import { ptBR } from "date-fns/locale/pt-BR";
 
-export function Post() {
+interface IPostData {
+  author: {
+    avatarUrl: string;
+    name: string;
+    role: string;
+  };
+  content: { type?: string; content: string; link?: string }[];
+  publishedAt: Date;
+}
+
+export function Post({ author, content, publishedAt }: IPostData) {
+  const publishedDateFormatted = format(
+    publishedAt,
+    "d 'de' LLLL 'ás' HH:mm'h'",
+    {
+      locale: ptBR,
+    }
+  );
+
+  const publishedDateFormateToNow = formatDistanceToNow(publishedAt, {
+    locale: ptBR,
+    addSuffix: true,
+  });
+
   return (
     <article className={styles.post}>
       <header className={styles.headerPost}>
         <div className={styles.author}>
-          <img src="https://github.com/CaioLima10.png" />
+          <img src={author.avatarUrl} />
           <div className={styles.authorInfo}>
-            <strong>Caio lima</strong>
-            <span>Web Developer</span>
+            <strong>{author.name}</strong>
+            <span>{author.role}</span>
           </div>
         </div>
         <time
           className={styles.time}
-          title="11 de Maio ás 08:13h"
-          dateTime="2022-05-11 08:13:30"
+          title={publishedDateFormatted}
+          dateTime={publishedAt.toISOString()}
         >
-          Publicado há 1hr
+          {publishedDateFormateToNow}
         </time>
       </header>
 
       <div className={styles.content}>
-        <p>Fala galeraa 👋</p>
-        <p>
-          Acabei de subir mais um projeto no meu portifa. É um projeto que fiz
-          no NLW Return, evento da Rocketseat. O nome do projeto é DoctorCare 🚀
-        </p>
-        <p>
-          <a href=""> 👉 jane.design/doctorcare</a>
-        </p>
-        <p>
-          <a href="">#novoprojeto #nlw #rocketseat</a>
-        </p>
+        {content.map((line) => {
+          if (line.type === "paragraph") {
+            return <p>{line.content}</p>;
+          } else if (line.type === "link") {
+            return (
+              <p>
+                <a href="#">{line.content}</a>
+              </p>
+            );
+          }
+        })}
       </div>
       <form className={styles.commentForm}>
         <strong>Deixe seu feedback</strong>
