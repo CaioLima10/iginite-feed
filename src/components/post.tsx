@@ -43,6 +43,7 @@ export function Post({ author, content, publishedAt }: IPostData) {
 
   function handleChangeTexterea(event: ChangeEvent<HTMLTextAreaElement>) {
     setNewComments(event.target.value);
+    event.target.setCustomValidity("");
   }
 
   function handleDeleteComment(commentsToDelete: string) {
@@ -50,6 +51,10 @@ export function Post({ author, content, publishedAt }: IPostData) {
       return comment !== commentsToDelete;
     });
     setComments(commentsWithoutDeleteOne);
+  }
+
+  function handleNewCommentInvalid(event: ChangeEvent<HTMLTextAreaElement>) {
+    event.target.setCustomValidity("Esse campo é obrigatorio!");
   }
 
   return (
@@ -92,6 +97,8 @@ export function Post({ author, content, publishedAt }: IPostData) {
           value={newComments}
           onChange={handleChangeTexterea}
           placeholder="Deixe seu comentario"
+          required
+          onInvalid={handleNewCommentInvalid}
         />
 
         <button type="submit">Publicar</button>
